@@ -1,0 +1,286 @@
+@use './_variable-size' as *;
+@use './_responsive' as *;
+@use 'sass:map';
+@use 'sass:math';
+
+$langs: ('ja', 'en');
+
+// font families and weights: $fonts[family][weight] returns (lang: (family), weight)
+$fonts: (
+  base: (
+    regular: (
+      ja: (
+        //prettier-ignore
+        family: ('Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo', sans-serif),
+      ),
+      weight: 400,
+    ),
+    bold: (
+      ja: (
+        //prettier-ignore
+        family: ('Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo', sans-serif),
+      ),
+      weight: 700,
+    ),
+    default: 'regular',
+  ),
+  heading: (
+    regular: (
+      ja: (
+        //prettier-ignore
+        family: ('Archivo', 'Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo', sans-serif),
+      ),
+      weight: 400,
+    ),
+    medium: (
+      ja: (
+        //prettier-ignore
+        family: ('Archivo', 'Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo', sans-serif),
+      ),
+      weight: 500,
+    ),
+    bold: (
+      ja: (
+        //prettier-ignore
+        family: ('Archivo', 'Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo', sans-serif),
+      ),
+      weight: 700,
+    ),
+    default: 'regular',
+  ),
+  decoration: (
+    light: (
+      ja: (
+        //prettier-ignore
+        family: ('Archivo Expanded', 'Archivo', 'Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo Expanded', 'Archivo', sans-serif),
+      ),
+      weight: 300,
+    ),
+    regular: (
+      ja: (
+        //prettier-ignore
+        family: ('Archivo Expanded', 'Archivo', 'Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo Expanded', 'Archivo', sans-serif),
+      ),
+      weight: 400,
+    ),
+    medium: (
+      ja: (
+        //prettier-ignore
+        family: ('Archivo Expanded', 'Archivo', 'Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo Expanded', 'Archivo', sans-serif),
+      ),
+      weight: 500,
+    ),
+    bold: (
+      ja: (
+        //prettier-ignore
+        family: ('Archivo Expanded', 'Archivo', 'Noto Sans JP', sans-serif),
+      ),
+      en: (
+        //prettier-ignore
+        family: ('Archivo Expanded', 'Archivo', sans-serif),
+      ),
+      weight: 700,
+    ),
+    default: 'light',
+  ),
+);
+
+@function get-font-object($family, $weight) {
+  @if not map.has-key($fonts, $family) {
+    @error "First argument $family: #{$family} is invalid. It must be either #{map.keys($fonts)}.";
+  }
+  $family-weights: map.get($fonts, $family);
+  @if ($weight == 'default') {
+    $weight: map.get($family-weights, 'default');
+  }
+  @if not map.has-key($family-weights, $weight) {
+    @error "Second argument $weight: #{$weight} is invalid. In font #{$family}, it must be either #{map.keys($family-weights)}.";
+  }
+
+  $object: (
+    keys: (
+      family: $family,
+      weight: $weight,
+    ),
+    value: map.get($family-weights, $weight),
+  );
+  @return $object;
+}
+@function get-font-variable($family, $weight) {
+  $keys: map.get(get-font-object($family, $weight), 'keys');
+  @return '--#{map.get($keys, 'family')}-#{map.get($keys, 'weight')}';
+}
+/*
+  get font-family , font-wight
+  - First quotation: usage
+  - Second quotation: font-weight
+
+  - Usage -
+  @include font;
+  @include font('jp');
+  @include font('base', 'bold');
+*/
+@mixin font($family: 'base', $weight: 'default') {
+  $font-variable: get-font-variable($family, $weight);
+  $font-values: map.get(get-font-object($family, $weight), 'value');
+  font-family: var(#{$font-variable});
+  font-weight: map.get($font-values, 'weight');
+}
+
+/*
+  get font-size
+  - First quotation: font-size
+  - Second quotation: letter-spacing (because its needs `em` unit and the value depends on font-size)
+  - Third Whether to set the last character spacing margin to negative or not
+
+  - Usage -
+  @include font-size(24);
+  @include font-size(24, 0.3em);
+  @include font-size(24, 0.3em, true);
+*/
+
+@mixin letter-spacing($letter-spacing: 0.06em, $has-negative-margin-right: false) {
+  letter-spacing: $letter-spacing;
+  @if $has-negative-margin-right {
+    margin-right: -$letter-spacing;
+  }
+}
+
+@mixin font-size($designed-font-px, $letter-spacing: null, $has-negative-margin-right: false, $get-vw: true) {
+  font-size: get-scoped-variable-size($designed-font-px, $min: 11px, $get-vw: $get-vw);
+  @include letter-spacing($letter-spacing, $has-negative-margin-right);
+}
+
+@mixin font-size-rem($designed-font-rem, $letter-spacing: null, $has-negative-margin-right: false) {
+  font-size: $designed-font-rem + rem;
+  @include letter-spacing($letter-spacing, $has-negative-margin-right);
+}
+
+/* line-height for clipping overflown margin at top and bottom
+--------------------------------------------------------- */
+$default-line-height: 2;
+
+@mixin make-block-element {
+  display: block;
+  height: 0;
+  overflow: hidden;
+  content: '.';
+}
+
+@mixin line-height-crop($line-height: $default-line-height) {
+  line-height: $line-height;
+
+  &::before {
+    @include make-block-element;
+
+    width: 0;
+    margin-top: calc((1 - #{$line-height}) * 0.2em);
+
+    @include lang('en') {
+      margin-top: calc((1 - #{$line-height}) * 0.5em);
+    }
+  }
+
+  &::after {
+    @include make-block-element;
+
+    width: 0;
+    margin-top: calc((1 - #{$line-height}) * 0.1em);
+
+    @include lang('en') {
+      margin-top: calc((1 - #{$line-height}) * 0.5em);
+    }
+  }
+}
+
+@mixin line-height-crop-0($line-height: $default-line-height) {
+  line-height: $line-height;
+
+  &::before {
+    @include make-block-element;
+
+    width: 0;
+    margin-top: calc((1 - #{$line-height}) * 0.5em);
+  }
+
+  &::after {
+    @include make-block-element;
+
+    width: 0;
+    margin-top: calc((1 - #{$line-height}) * 0.5em);
+  }
+}
+
+@mixin default-text($selector) {
+  @include font-size-rem(1.6, 0.06em);
+  @include font('base', 'regular');
+  @include line-height-crop(math.div(28, 16));
+
+  @include sp(&) {
+    @include font-size-rem(1.4, 0.06em);
+    @include line-height-crop(math.div(25, 14));
+  }
+
+  @include lang('en') {
+    @include line-height-crop(math.div(24, 16));
+
+    @include sp(&) {
+      @include line-height-crop(math.div(21, 14));
+    }
+  }
+}
+
+@mixin heading {
+  @include font('heading', 'bold');
+  @include font-size-rem(2, 0.06em, true);
+  @include line-height-crop(math.div(35, 20));
+
+  &::after {
+    margin-top: -0.5rem;
+  }
+
+  @include sp(&) {
+    @include font-size-rem(1.6, 0.06em, true);
+    @include line-height-crop(math.div(28, 16));
+  }
+
+  @include lang('en') {
+    @include line-height-crop(math.div(30, 20));
+
+    @include sp(&) {
+      @include line-height-crop(math.div(24, 20));
+    }
+  }
+}

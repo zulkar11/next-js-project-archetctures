@@ -1,0 +1,94 @@
+@use './_unit' as *;
+@use 'sass:map';
+@use 'sass:math';
+
+$pc-max-width: 1440px;
+$sp-max-width: 600px;
+$tab-min-width: 640px;
+$break-points: (
+  'sp': 980px,
+);
+
+$top-content-size: (
+  min-height: 768px,
+  kv-min-height: 560px,
+);
+
+// minimum resolution to switch device
+$break-gap: 0.05px;
+
+/* scoped variables (global = PC); if you use device mixin, it will be override in the scope. */
+$scoped-device: 'pc';
+
+@mixin pc($selector) {
+  $default-scoped-device: $scoped-device;
+  $scoped-device: 'pc' !global;
+
+  @at-root {
+    #{$selector} {
+      @media only screen and (min-width: #{map.get($break-points, sp) + 1px}) {
+        @content;
+      }
+    }
+  }
+
+  $scoped-device: $default-scoped-device !global;
+}
+
+@mixin sp($selector) {
+  $default-scoped-device: $scoped-device;
+  $scoped-device: 'sp' !global;
+
+  @at-root {
+    #{$selector} {
+      @media only screen and (max-width: #{map.get($break-points, sp)}) {
+        @content;
+      }
+    }
+  }
+
+  $scoped-device: $default-scoped-device !global;
+}
+
+@mixin tab($selector) {
+  $default-scoped-device: $scoped-device;
+  $scoped-device: 'sp' !global;
+
+  @at-root {
+    #{$selector} {
+      @media only screen and (min-width: #{$tab-min-width}) and (max-width: #{map.get($break-points, sp)}) {
+        @content;
+      }
+    }
+  }
+
+  $scoped-device: $default-scoped-device !global;
+}
+
+@mixin lang($lang: 'en/ja') {
+  @at-root {
+    html[lang='#{$lang}'] & {
+      @content;
+    }
+  }
+}
+
+@mixin column-2-media-query-sp($selector) {
+  @at-root {
+    #{$selector} {
+      @media only screen and (max-width: 463px) {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin column-1-2-media-query($selector) {
+  @at-root {
+    #{$selector} {
+      @media only screen and (min-width: 592px) {
+        @content;
+      }
+    }
+  }
+}

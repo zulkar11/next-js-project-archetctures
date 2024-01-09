@@ -1,0 +1,110 @@
+@use './_fonts' as *;
+@use './_colors' as *;
+@use './_variable-size' as *;
+@use './_responsive' as *;
+@use 'sass:map';
+@use 'sass:math';
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+// decoration fonts
+@font-face {
+  font-family: 'Archivo Expanded';
+  src: local('Archivo Expanded'), url('/assets/fonts/Archivo_Expanded-Light.woff2');
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'Archivo Expanded';
+  src: local('Archivo Expanded'), url('/assets/fonts/Archivo_Expanded-Regular.woff2');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Archivo Expanded';
+  src: local('Archivo Expanded'), url('/assets/fonts/Archivo_Expanded-Medium.woff2');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'Archivo Expanded';
+  src: local('Archivo Expanded'), url('/assets/fonts/Archivo_Expanded-Bold.woff2');
+  font-weight: 700;
+}
+
+// zoom level
+html {
+  --zoom-rate: 1;
+  width: calc(100vw - calc(100vw - 100%));
+
+  &[data-snap='true'] {
+    scroll-snap-type: y mandatory;
+
+    @include sp(&) {
+      scroll-snap-type: none;
+    }
+  }
+
+  &[data-snap='false'] {
+    scroll-snap-type: none;
+  }
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  @include font-size-rem(1.6, 0.06em);
+}
+
+html[lang='ja'] {
+  $lang: 'ja';
+  @each $family, $family-weights in $fonts {
+    @each $weight, $parameters in $family-weights {
+      @if $weight != 'default' {
+        $font-variable: get-font-variable($family, $weight);
+        #{$font-variable}: map.get($parameters, $lang, 'family');
+      }
+    }
+  }
+}
+html[lang='en'] {
+  $lang: 'en';
+  @each $family, $family-weights in $fonts {
+    @each $weight, $parameters in $family-weights {
+      @if $weight != 'default' {
+        $font-variable: get-font-variable($family, $weight);
+        #{$font-variable}: map.get($parameters, $lang, 'family');
+      }
+    }
+  }
+}
+
+html {
+  @include font;
+  font-size: 62.5%;
+  color: $text-light;
+}
+body {
+  background-color: $background-dark;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+li {
+  list-style: none;
+}
+
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline-width: 1rem;
+}
+
+jamstec-header::part(header) {
+  position: sticky;
+}
+
+astro-particles {
+  display: none;
+}

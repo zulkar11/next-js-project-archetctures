@@ -1,0 +1,67 @@
+@use './responsive' as *;
+@use './_unit' as *;
+@use 'sass:math';
+@use 'sass:map';
+
+/* design size */
+$design-size: (
+  'pc': (
+    'width': 1440px,
+    'height': 768px,
+  ),
+  'sp': (
+    'width': 375px,
+    'height': 809px,
+  ),
+);
+
+@function get-variable-size($designed-px, $device, $min: null, $max: null, $get-vw: false) {
+  @if not unitless($designed-px) and unit($designed-px) != 'px' {
+    @error 'size `#{$designed-px}` is invalid. please use unitless number or px value.';
+  }
+
+  $design-device: $device;
+
+  @if not map.has-key($design-size, $design-device) {
+    @error 'device `#{$device}` is not valid. It should be `#{map.keys($design-size)}`';
+  }
+
+  $result: calc(
+    (math.div(strip-unit($designed-px), strip-unit(map.get($design-size, $design-device, 'width'))) * 100vw) *
+      var(--zoom-rate)
+  );
+
+  @if $device == 'pc' and $get-vw == false {
+    $result: calc((#{strip-unit($designed-px)}px) * var(--zoom-rate));
+  }
+
+  @if $device == 'pc' and $get-vw == true {
+    $max-size: calc((#{strip-unit($designed-px)}px) * var(--zoom-rate));
+    $result: min($max-size, $result);
+  }
+  @if $device == 'sp' and $get-vw == true {
+    $max-size: calc(
+      (#{math.div(strip-unit($designed-px) * $sp-max-width, strip-unit(map.get($design-size, 'sp', 'width')))}) *
+        var(--zoom-rate)
+    );
+    $result: min($max-size, $result);
+  }
+
+  @if $min and $max {
+    @return clamp($min, $result, $max);
+  } @else if $min {
+    @return max($result, $min);
+  } @else if $max {
+    @return min($result, $max);
+  } @else {
+    @return $result;
+  }
+}
+
+@function get-scoped-variable-size($designed-px, $min: null, $max: null, $get-vw: true) {
+  @return get-variable-size($designed-px, $scoped-device, $min, $max, $get-vw);
+}
+
+@function vh($value) {
+  @return calc(var(--vh, 1vh) * $value);
+}

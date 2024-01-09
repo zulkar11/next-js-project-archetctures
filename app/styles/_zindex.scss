@@ -1,0 +1,21 @@
+@use 'sass:map';
+@use 'sass:list';
+
+// breakpoint var (first in array is the smallest number, etc array.length)
+// Try "content" first, then add more if necessary.
+$z-indexes: ('background', 'content', 'sideNav', 'header', 'sp-menu', 'modal', 'loading', 'indicator');
+
+/*
+  get z-index
+  - First quotation: z-indexes name
+
+  - Usage -
+  @include z-index('header');
+*/
+@mixin z-index($name) {
+  @if list.index($z-indexes, $name) {
+    z-index: list.index($z-indexes, $name);
+  } @else {
+    @error 'There is no item "#{$name}" in this list; choose one of: #{$z-indexes}';
+  }
+}

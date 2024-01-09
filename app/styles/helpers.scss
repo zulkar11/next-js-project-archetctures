@@ -1,0 +1,85 @@
+@use './responsive' as *;
+
+.hp_sp-only {
+  @include pc(&) {
+    display: none !important;
+  }
+}
+.hp_pc-only {
+  @include sp(&) {
+    display: none !important;
+  }
+}
+
+.hp_spSmaller-only {
+  @include pc(&) {
+    display: none !important;
+  }
+  @include tab(&) {
+    display: none !important;
+  }
+}
+
+.hp_tab-only {
+  @include tab(&) {
+    display: block !important;
+  }
+}
+
+html[lang='ja'] .hp_en-only {
+  display: none !important;
+}
+
+html[lang='en'] .hp_ja-only {
+  display: none !important;
+}
+
+a {
+  &[target='_blank'] .hp_internal-only {
+    display: none !important;
+  }
+
+  &:not([target='_blank']) .hp_external-only {
+    display: none !important;
+  }
+
+  &[href*='.pdf'],
+  &[href$='.xls'],
+  &[href$='.xlsx'],
+  &[href$='.docx'],
+  &[href$='.doc'],
+  &[href$='.csv'] {
+    .hp_internal-only,
+    .hp_external-only {
+      display: none !important;
+    }
+  }
+
+  &:not([href*='.pdf']) .hp_pdf-only {
+    display: none !important;
+  }
+
+  &:not([href$='.xls'], [href$='.xlsx'], [href$='.csv'], [href$='.doc'], [href$='.docx']) {
+    .hp_download-only {
+      display: none !important;
+    }
+  }
+}
+
+.hp_align-center {
+  text-align: center !important;
+}
+.hp_align-right {
+  text-align: right !important;
+}
+
+.hp_align-unset {
+  text-align: unset !important;
+}
+
+.hp_noIndent {
+  text-indent: 0 !important;
+}
+.hp_noWrap {
+  white-space: nowrap !important;
+}

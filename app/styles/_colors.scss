@@ -1,0 +1,214 @@
+@use './_variable-size' as *;
+@use 'sass:map';
+
+$color-rich-black: #00050b;
+$color-gunmetal: #222c3b;
+$color-deep-navy: #0c1322;
+$color-anti-flash-white: #f0f0f0;
+$color-white-smoke: #f5f5f5;
+$color-white: #ffffff;
+$color-primary: #0d4ce6;
+$color-denim-blue: #77bfff;
+$color-onyx: #3b4043;
+$color-slate-gray: #6f747e;
+$color-platinum: #dcdee6;
+$color-alice-blue: #eaf0f5;
+$color-sapphire: #1350ad;
+$color-peacock: #0c6c79;
+$color-blue-gray: #475a72;
+$color-charcoal: #010919;
+$color-smoky-black: #101010;
+$color-granite: #7f7f7f;
+$color-aqua-blue: #77d6ff;
+$color-ebony: #090f18;
+$color-cyan-blue: #2a7cef;
+$color-dark-sky-blue: #358af1;
+$color-havelock-blue: #3e95f3;
+$color-red: #e51919;
+$color-rich-blue: #0027ff;
+$color-black: #000000;
+$color-charcoal-blue: #000f1d;
+$color-jaguar: #000610;
+$color-cinder: #0a1018;
+$color-butterfly-blue: #28a7e1;
+$color-orchid-blue: #004ce6;
+$color-crystal-blue: #4ea7f6;
+$color-pastel-gray: #cccccc;
+$color-pale-blue: #f5fcff;
+$color-shadow: #0b1e57;
+$color-grey-goose: #ced0d5;
+$color-cadet-blue: #afb3bd;
+$color-venetian-red: #c71010;
+$color-blue-chalk: #e6edfd;
+$color-pale-turquoise: #c4e4fb;
+$color-powder-blue: #8bcaf8;
+$color-sky-blue: #52a5e2;
+$color-light-sky-blue: #78c1f7;
+$color-cornflower-blue: #4e96de;
+$color-cobalt-blue: #1561b6;
+$color-ultramarine-blue: #0e4398;
+$color-midnight-blue: #112e74;
+
+$text-light: $color-white;
+$text-dark: $color-onyx;
+$text-gray: $color-granite;
+$text-light-gray: $color-slate-gray;
+$text-red: $color-red;
+$text-blue: $color-primary;
+$text-blue-secondary: $color-orchid-blue;
+$tag-pressRelease: $color-sapphire;
+$tag-column: $color-peacock;
+$tag-topics: $color-blue-gray;
+$tag-others: $color-slate-gray;
+$tag-bg: $color-anti-flash-white;
+$background-dark: $color-rich-black;
+$background-primary: $color-primary;
+$background-light: $color-white;
+$background-light-secondary: rgba($color-white, 0.08);
+$background-light-tertiary: rgba($color-white, 0.1);
+$background-light-white: $color-white-smoke;
+$background-drawer: $color-charcoal;
+$background-blue: $color-primary;
+$background-blue-chalk: $color-blue-chalk;
+$background-gray: $color-anti-flash-white;
+$background-light-gray: $color-pastel-gray;
+$background-dark-gray: $color-onyx;
+$background-blue-gray: $color-blue-gray;
+$background-pale-gray: $color-pale-blue;
+$background-blue-chalk: $color-blue-chalk;
+$background-light-blue: $color-alice-blue;
+$background-blue: $color-orchid-blue;
+$icon-light: $color-white;
+$icon-blue: $color-primary;
+$icon-disabled: $color-platinum;
+$icon-disabled-secondary: $color-onyx;
+$border-light-soft: rgba($color-white, 0.15);
+$border-light: rgba($color-white, 0.3);
+$border-gray: $color-platinum;
+$border-blue: $color-primary;
+$border-alice-blue: $color-alice-blue;
+$table-header: $color-alice-blue;
+$modal-background: $color-deep-navy;
+$image-overlay: (
+  rgba($color-smoky-black, 0) 0%,
+  rgba($color-ebony, 0.66) 39.9%,
+  rgba($color-ebony, 0.8) 56.67%,
+  $color-smoky-black 100%
+);
+$image-overlay-secondary: ($color-rich-blue 0%, $color-black 100%);
+$image-overlay-tertiary: ($color-charcoal-blue 0%, $color-jaguar 72.91%, rgba($color-cinder, 0.8) 100%);
+
+// 固定値
+$elWidth: calc((100% - 15.9rem));
+
+$link-blue-gradation: (
+  $color-primary 0%,
+  $color-primary $elWidth,
+  rgba($color-orchid-blue, 0.9) calc($elWidth + 2.9rem),
+  $color-aqua-blue calc($elWidth + 6.3rem),
+  rgba($color-cyan-blue, 0.5) calc($elWidth + 8.5rem),
+  rgba($color-dark-sky-blue, 0.25) calc($elWidth + 11.1rem),
+  rgba($color-havelock-blue, 0) 100%
+);
+
+$link-light-gradation: (
+  $color-white 0%,
+  $color-white calc($elWidth),
+  rgba($color-orchid-blue, 0.9) calc($elWidth + 2.9rem),
+  $color-aqua-blue calc($elWidth + 6.3rem),
+  rgba($color-cyan-blue, 0.5) calc($elWidth + 8.5rem),
+  rgba($color-dark-sky-blue, 0.25) calc($elWidth + 11.1rem),
+  rgba($color-primary, 0) 100%
+);
+
+$bg-light-border-blue-gradation: (rgba($color-primary, 1) 0%, rgba($color-butterfly-blue, 0) 100%);
+
+$bg-border-blue-gradation: linear-gradient($color-primary 0%, rgba(40, 167, 225, 0) 100%);
+
+$bg-dark-border-blue-gradation: (
+  rgba($color-crystal-blue, 1) 0%,
+  rgba($color-denim-blue, 1) 13%,
+  rgba($color-aqua-blue, 1) 28%,
+  rgba($color-primary, 0.77) 61%,
+  rgba($color-primary, 0.2) 84%,
+  rgba($color-primary, 0) 100%
+);
+
+$header-bar-gradation: (
+  rgba($color-havelock-blue, 0) 0%,
+  rgba($color-primary, 0.3) 20%,
+  rgba($color-aqua-blue, 1) 50%,
+  rgba($color-primary, 0.3) 80%,
+  rgba($color-havelock-blue, 0) 100%
+);
+$heading-bar-gradation: (
+  rgba($color-butterfly-blue, 0) 0%,
+  rgba($color-orchid-blue, 0.3) 20.2%,
+  $color-aqua-blue 50.74%,
+  rgba($color-orchid-blue, 0.3) 81.28%,
+  rgba($color-butterfly-blue, 0) 100%
+);
+
+$bg-rich-black-gradation: linear-gradient(
+  90deg,
+  $color-rich-black,
+  rgba($color-rich-black, 0.8) 100% / 3,
+  rgba($color-rich-black, 0) 100%
+);
+
+$bg-rich-black-gradation-sp: linear-gradient(
+  90deg,
+  rgba($color-rich-black, 0.5),
+  $color-rich-black 20%,
+  rgba($color-rich-black, 0) 100%
+);
+
+$bg-rich-black-gradation-secondary: linear-gradient(
+  90deg,
+  rgba($color-rich-black, 0.5) 0%,
+  rgba($color-rich-black, 1) 20%,
+  rgba($color-rich-black, 0) 100% / 3,
+  rgba($color-rich-black, 0) 100%
+);
+
+$link-white-gradation: (
+  $color-white 0%,
+  $color-white 50%,
+  rgba($color-cyan-blue, 0.9) 55%,
+  $color-aqua-blue 65.66%,
+  rgba($color-cyan-blue, 0.5) 73.89%,
+  rgba($color-dark-sky-blue, 0.25) 81.28%,
+  rgba($color-havelock-blue, 0) 91.65%,
+  rgba($color-crystal-blue, 0) 100%
+);
+
+$tag-blue-gradation: ($color-primary 0%, $color-crystal-blue 100%);
+$bg-shadow: rgba($color-shadow, 0.6);
+$profile-background: linear-gradient(#d5d9e4 0%, #c2cad6 100%);
+
+@mixin blur-bg($opacity: 0.16) {
+  background-color: rgba($color-white, $opacity);
+  backdrop-filter: blur(1rem);
+}
+
+@mixin blur-bg-dark {
+  background-color: rgba($background-blue-gray, 0.7);
+  backdrop-filter: blur(1rem);
+}
+
+@mixin blur-bg-light($opacity: 0.16, $blur: 1rem) {
+  background-color: rgba($background-pale-gray, $opacity);
+  backdrop-filter: blur($blur);
+}
+
+@mixin blue-bg-gradation($elWidth, $is-light: false) {
+  @if $is-light {
+    background: linear-gradient(104deg, $link-light-gradation);
+  } @else {
+    background: linear-gradient(104deg, $link-blue-gradation);
+  }
+
+  background-repeat: no-repeat;
+  background-position: $elWidth;
+  background-size: $elWidth 100%;
+}
